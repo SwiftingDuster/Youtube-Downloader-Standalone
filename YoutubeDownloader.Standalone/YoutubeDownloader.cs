@@ -16,7 +16,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     internal class YoutubeDownloader
     {
         internal static readonly string YoutubeDownloadsDirectory = Path.Combine(Environment.CurrentDirectory, "Youtube Downloads");
-        private const string FFmpegDirectory = "Tools";
+        private static readonly string FFmpegDirectory = Path.Combine(Environment.CurrentDirectory, "Tools");
         private const string FFmpegExeName = "ffmpeg.exe";
         private const string FFprobeExeName = "ffprobe.exe";
 
