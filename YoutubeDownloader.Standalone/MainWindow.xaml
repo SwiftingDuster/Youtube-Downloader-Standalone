@@ -77,30 +77,56 @@
                     <Label x:Name="YoutubeInfo4Label" Grid.Row="4" Grid.Column="3" Margin="10" TextOptions.TextFormattingMode="Display"/>
                     <Label x:Name="YoutubeInfo5Label" Grid.Row="5" Grid.Column="3" Margin="10" TextOptions.TextFormattingMode="Display"/>
 
-                    <CheckBox x:Name="YoutubeDownloadAudioOnly1CheckBox" Grid.Row="1" Grid.Column="4" Margin="10,10,10,51" VerticalContentAlignment="Center"
-                              Content="Audio only"/>
-                    <Button x:Name="YoutubeDownload1Button" Grid.Row="1" Grid.Column="4" Margin="10,50,10,10" Background="#FFDDDDDD"
-                            Click="YoutubeDownloadButton_Click" Content="Download" IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    <Grid Grid.Row="1" Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.35*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="YoutubeDownloadAudioOnly1CheckBox" Margin="10,10,10,0" VerticalContentAlignment="Center" Content="Audio only"/>
+                        <Button x:Name="YoutubeDownload1Button" Grid.Row="1" Margin="10" Click="YoutubeDownloadButton_Click" Content="Download"
+                                IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
 
-                    <CheckBox x:Name="YoutubeDownloadAudioOnly2CheckBox" Grid.Row="2" Grid.Column="4" Margin="10,10,10,51" VerticalContentAlignment="Center"
-                              Content="Audio only"/>
-                    <Button x:Name="YoutubeDownload2Button" Grid.Row="2" Grid.Column="4" Margin="10,50,10,10" Click="YoutubeDownloadButton_Click"
-                            Content="Download" IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    <Grid Grid.Row="2" Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.35*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="YoutubeDownloadAudioOnly2CheckBox" Margin="10,10,10,0" VerticalContentAlignment="Center" Content="Audio only"/>
+                        <Button x:Name="YoutubeDownload2Button" Grid.Row="1" Margin="10" Click="YoutubeDownloadButton_Click" Content="Download"
+                                IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
 
-                    <CheckBox x:Name="YoutubeDownloadAudioOnly3CheckBox" Grid.Row="3" Grid.Column="4" Margin="10,10,10,51" VerticalContentAlignment="Center"
-                              Content="Audio only"/>
-                    <Button x:Name="YoutubeDownload3Button" Grid.Row="3" Grid.Column="4" Margin="10,50,10,10" Click="YoutubeDownloadButton_Click"
-                            Content="Download" IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    <Grid Grid.Row="3" Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.35*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="YoutubeDownloadAudioOnly3CheckBox" Margin="10,10,10,0" VerticalContentAlignment="Center" Content="Audio only"/>
+                        <Button x:Name="YoutubeDownload3Button" Grid.Row="1" Margin="10" Click="YoutubeDownloadButton_Click" Content="Download"
+                                IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
 
-                    <CheckBox x:Name="YoutubeDownloadAudioOnly4CheckBox" Grid.Row="4" Grid.Column="4" Margin="10,10,10,51" VerticalContentAlignment="Center"
-                              Content="Audio only"/>
-                    <Button x:Name="YoutubeDownload4Button" Grid.Row="4" Grid.Column="4" Margin="10,50,10,10" Click="YoutubeDownloadButton_Click"
-                            Content="Download" IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    <Grid Grid.Row="4" Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.35*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="YoutubeDownloadAudioOnly4CheckBox" Margin="10,10,10,0" VerticalContentAlignment="Center" Content="Audio only"/>
+                        <Button x:Name="YoutubeDownload4Button" Grid.Row="1" Margin="10" Click="YoutubeDownloadButton_Click" Content="Download"
+                                IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
 
-                    <CheckBox x:Name="YoutubeDownloadAudioOnly5CheckBox" Grid.Row="5" Grid.Column="4" Margin="10,10,10,51" VerticalContentAlignment="Center"
-                              Content="Audio only"/>
-                    <Button x:Name="YoutubeDownload5Button" Grid.Row="5" Grid.Column="4" Margin="10,50,10,10" Click="YoutubeDownloadButton_Click"
-                            Content="Download" IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+
+                    <Grid Grid.Row="5" Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.35*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox x:Name="YoutubeDownloadAudioOnly5CheckBox" Margin="10,10,10,0" VerticalContentAlignment="Center" Content="Audio only"/>
+                        <Button x:Name="YoutubeDownload5Button" Grid.Row="1" Margin="10" Click="YoutubeDownloadButton_Click" Content="Download"
+                                IsEnabled="False" TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
 
                     <Grid Grid.Row="6" Grid.ColumnSpan="5">
                         <Grid.ColumnDefinitions>
@@ -117,14 +143,14 @@
 
                         <Label Grid.Row="0" Margin="10,5,10,5" VerticalContentAlignment="Center" Content="Video Resolution:" TextOptions.TextFormattingMode="Display"/>
                         <Label Grid.Row="1" Margin="10,5,10,5" VerticalContentAlignment="Center" Content="Audio File Format:" TextOptions.TextFormattingMode="Display"/>
-                        <ComboBox x:Name="VideoResolutionComboBox" Grid.Column="1" Margin="10,5,10,5" VerticalContentAlignment="Center" SelectedIndex="2">
+                        <ComboBox x:Name="VideoResolutionComboBox" Grid.Column="1" Margin="10,5,10,2.5" VerticalContentAlignment="Center" SelectedIndex="2">
                             <ComboBoxItem Content="2160p"/>
                             <ComboBoxItem Content="1440p"/>
                             <ComboBoxItem Content="1080p"/>
                             <ComboBoxItem Content="720p"/>
                             <ComboBoxItem Content="480p"/>
                         </ComboBox>
-                        <CheckBox x:Name="AudioConvertToMP3CheckBox" Grid.Row="1" Grid.Column="1" Margin="10,5,10,5" VerticalContentAlignment="Center"
+                        <CheckBox x:Name="AudioConvertToMP3CheckBox" Grid.Row="1" Grid.Column="1" Margin="10,2.5,10,5" VerticalContentAlignment="Center"
                                   Content="Convert to MP3" IsChecked="True"/>
 
                         <Grid Grid.Row="0" Grid.Column="2">
@@ -132,15 +158,15 @@
                                 <ColumnDefinition Width="0.75*"/>
                                 <ColumnDefinition Width="0.25*"/>
                             </Grid.ColumnDefinitions>
-                            <Label x:Name="YoutubeDownloadDirectoryLabel" Margin="10,5,10,5" VerticalContentAlignment="Center" Content="Download to:" TextOptions.TextFormattingMode="Display"/>
-                            <Button x:Name="YoutubeDownloadDirectoryGotoButton" Grid.Column="1" Margin="10,5,10,5" Click="YoutubeDownloadDirectoryGotoButton_Click" Content="Open"/>
+                            <Label x:Name="YoutubeDownloadDirectoryLabel" Margin="10,5,10,2.5" VerticalContentAlignment="Center" Content="Download to:" TextOptions.TextFormattingMode="Display"/>
+                            <Button x:Name="YoutubeDownloadDirectoryGotoButton" Grid.Column="1" Margin="10,5,10,2.5" Click="YoutubeDownloadDirectoryGotoButton_Click" Content="Open"/>
                         </Grid>
-                        <Button x:Name="YoutubeDownloadDirectoryPickerButton" Grid.Row="1" Grid.Column="2" Margin="10,5,10,5" Click="YoutubeDownloadDirectoryPickerButton_Click"
+                        <Button x:Name="YoutubeDownloadDirectoryPickerButton" Grid.Row="1" Grid.Column="2" Margin="10,2.5,10,5" Click="YoutubeDownloadDirectoryPickerButton_Click"
                                 Content="Change Download Location"/>
 
-                        <Button x:Name="DownloadAllAudioButton" Grid.Row="1" Grid.Column="3" Margin="10,5,10,5" Click="DownloadAllAudioButton_Click"
+                        <Button x:Name="DownloadAllAudioButton" Grid.Row="1" Grid.Column="3" Margin="10,2.5,10,5" Click="DownloadAllAudioButton_Click"
                                 Content="Download All Audio"/>
-                        <Button x:Name="DownloadAllMuxedButton" Grid.Row="1" Grid.Column="4" Margin="10,5,10,5" Click="DownloadAllMuxedButton_Click"
+                        <Button x:Name="DownloadAllMuxedButton" Grid.Row="1" Grid.Column="4" Margin="10,2.5,10,5" Click="DownloadAllMuxedButton_Click"
                                 Content="Download All Muxed"/>
                     </Grid>
 
