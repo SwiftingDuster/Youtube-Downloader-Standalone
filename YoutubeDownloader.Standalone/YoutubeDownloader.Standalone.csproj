@@ -188,4 +188,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del "$(TargetDir)"*.xml</PostBuildEvent>
+  </PropertyGroup>
 </Project>
