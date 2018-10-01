@@ -23,7 +23,11 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string DownloadFinishedIndicator = "✔";
+
         private string downloadDirectory = YoutubeDownloader.YoutubeDownloadsDirectory;
+
+        private List<string> activeDownloadList = new List<string>();
 
         private bool showDownloadConfirmation = true;
 
@@ -44,8 +48,9 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
         private async void YoutubeLinkTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox targetTextBox = sender as TextBox;
+            string url = targetTextBox.Text;
 
-            if (targetTextBox.Text == String.Empty || !YoutubeClient.TryParseVideoId(targetTextBox.Text, out string videoID)) return;
+            if (!YoutubeClient.TryParseVideoId(url, out string videoID)) return;
 
             string urlTextBoxNumber = new string(targetTextBox.Name.SkipWhile(c => !Char.IsDigit(c)).Take(1).ToArray());
             TextBlock titleTextBlock = (FindName($"YoutubeTitle{urlTextBoxNumber}TextBlock") as TextBlock);
@@ -55,11 +60,11 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             downloadButton.IsEnabled = false;
             downloadButton.Content = "Retrieving...";
 
-            if (!urlToVideoInfoDictionary.TryGetValue(targetTextBox.Text, out Video video))
+            if (!urlToVideoInfoDictionary.TryGetValue(url, out Video video))
             {
                 try
                 {
-                    video = await YoutubeDownloader.GetVideoInfoAsync(targetTextBox.Text);
+                    video = await YoutubeDownloader.GetVideoInfoAsync(url);
                 }
                 catch (VideoUnavailableException ex)
                 {
@@ -69,9 +74,9 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                     infoLabel.Content = String.Empty;
                     return;
                 }
-                if (!urlToVideoInfoDictionary.ContainsKey(targetTextBox.Text)) urlToVideoInfoDictionary.Add(targetTextBox.Text, video);
+                urlToVideoInfoDictionary[url] = video;
             }
-            Tuple<VideoStreamInfo, AudioStreamInfo> mediaStreamInfos = await YoutubeDownloader.GetBestVideoAndAudioStreamInfoAsync(targetTextBox.Text);
+            Tuple<VideoStreamInfo, AudioStreamInfo> mediaStreamInfos = await YoutubeDownloader.GetBestVideoAndAudioStreamInfoAsync(url);
 
             string videoSize = Math.Round(ByteSize.FromBytes(mediaStreamInfos.Item1.Size + mediaStreamInfos.Item2.Size).MegaBytes, 2).ToString() + " MB";
             string audioSize = Math.Round(ByteSize.FromBytes(mediaStreamInfos.Item2.Size).MegaBytes, 2).ToString() + " MB";
@@ -79,7 +84,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             titleTextBlock.Text = video.Title + Environment.NewLine + $"[{mediaStreamInfos.Item1.Resolution.Height}p]";
             infoLabel.Content = String.Format("Video Size: {1}{0}Audio Size: {2}{0}Duration: {3}", Environment.NewLine, videoSize, audioSize, video.Duration.ToString());
 
-            if (!urlToVideoThumbnailDictionary.TryGetValue(targetTextBox.Text, out BitmapImage image))
+            if (!urlToVideoThumbnailDictionary.TryGetValue(url, out BitmapImage image))
             {
                 using (WebClient client = new WebClient())
                 {
@@ -92,7 +97,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                             downloadButton.Content = "Download";
                             downloadButton.IsEnabled = true;
                             
-                            if (!urlToVideoThumbnailDictionary.ContainsKey(targetTextBox.Text)) urlToVideoThumbnailDictionary.Add(targetTextBox.Text, image);
+                            if (!urlToVideoThumbnailDictionary.ContainsKey(url)) urlToVideoThumbnailDictionary.Add(url, image);
                         }
                         catch (TargetInvocationException) // Max resolution thumbnail was not found.
                         {
@@ -114,7 +119,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
         {
             Button button = sender as Button;
 
-            if (button.Content.ToString() == "✔") return;
+            if (button.Content.ToString() == DownloadFinishedIndicator) return;
 
             string urlTextBoxNumber = new String(button.Name.SkipWhile(c => !Char.IsDigit(c)).Take(1).ToArray());
             string url = (FindName($"YoutubeLink{urlTextBoxNumber}TextBox") as TextBox).Text;
@@ -130,38 +135,35 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                 }
             }
 
+            void DownloadStart(string videoTitle)
+            {
+                button.IsEnabled = false;
+                button.Content = "In Progress";
+            }
+
+            void DownloadComplete(string fileName)
+            {
+                button.Content = "Processing";
+            }
+
+            void FFmpegProcessComplete(string fileName)
+            {
+                button.Content = DownloadFinishedIndicator;
+                button.IsEnabled = true;
+                activeDownloadList.Remove(url);
+            }
+
             if (!audioOnly)
             {
                 int desiredResolution = int.Parse(((ComboBoxItem)VideoResolutionComboBox.SelectedItem).Content.ToString().Replace("p", ""));
-                YoutubeDownloader.DownloadVideoAndAudioAsync(url, (videoTitle) =>
-                {
-                    button.IsEnabled = false;
-                    button.Content = "In Progress";
-                }, (fileName) =>
-                {
-                    button.Content = "Processing";
-                }, (fileName) =>
-                {
-                    button.Content = "✔";
-                    button.IsEnabled = true;
-                }, downloadDirectory, desiredResolution);
-
+                YoutubeDownloader.DownloadVideoAndAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, downloadDirectory, desiredResolution);
             }
             else
             {
-                YoutubeDownloader.DownloadAudioAsync(url, (videoTitle) =>
-                {
-                    button.IsEnabled = false;
-                    button.Content = "In Progress";
-                }, (fileName) =>
-                {
-                    button.Content = "Processing";
-                }, (fileName) =>
-                {
-                    button.Content = "✔";
-                    button.IsEnabled = true;
-                }, downloadDirectory, AudioConvertToMP3CheckBox.IsChecked.GetValueOrDefault(true));
+                YoutubeDownloader.DownloadAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, downloadDirectory, AudioConvertToMP3CheckBox.IsChecked.GetValueOrDefault(true));
             }
+
+            activeDownloadList.Add(url);
         }
 
         private async void VideoResolutionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -236,27 +238,27 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
 
             showDownloadConfirmation = false;
 
-            if (YoutubeDownload1Button.IsEnabled && YoutubeDownload1Button.Content.ToString() != "✔")
+            if (YoutubeDownload1Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink1TextBox.Text) && YoutubeDownload1Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly1CheckBox.IsChecked = true;
                 YoutubeDownload1Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload2Button.IsEnabled && YoutubeDownload2Button.Content.ToString() != "✔")
+            if (YoutubeDownload2Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink2TextBox.Text) && YoutubeDownload2Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly2CheckBox.IsChecked = true;
                 YoutubeDownload2Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload3Button.IsEnabled && YoutubeDownload3Button.Content.ToString() != "✔")
+            if (YoutubeDownload3Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink3TextBox.Text) && YoutubeDownload3Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly3CheckBox.IsChecked = true;
                 YoutubeDownload3Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload4Button.IsEnabled && YoutubeDownload4Button.Content.ToString() != "✔")
+            if (YoutubeDownload4Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink4TextBox.Text) && YoutubeDownload4Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly4CheckBox.IsChecked = true;
                 YoutubeDownload4Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload5Button.IsEnabled && YoutubeDownload5Button.Content.ToString() != "✔")
+            if (YoutubeDownload5Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink5TextBox.Text) && YoutubeDownload5Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly5CheckBox.IsChecked = true;
                 YoutubeDownload5Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -267,34 +269,31 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
 
         private void DownloadAllMuxedButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show($"Download all video and audio?", "Download Confirmation", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-            {
-                return;
-            }
+            if (MessageBox.Show($"Download all video and audio?", "Download Confirmation", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             showDownloadConfirmation = false;
 
-            if (YoutubeDownload1Button.IsEnabled && YoutubeDownload1Button.Content.ToString() != "✔")
+            if (YoutubeDownload1Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink1TextBox.Text) && YoutubeDownload1Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly1CheckBox.IsChecked = false;
                 YoutubeDownload1Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload2Button.IsEnabled && YoutubeDownload2Button.Content.ToString() != "✔")
+            if (YoutubeDownload2Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink2TextBox.Text) && YoutubeDownload2Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly2CheckBox.IsChecked = false;
                 YoutubeDownload2Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload3Button.IsEnabled && YoutubeDownload3Button.Content.ToString() != "✔")
+            if (YoutubeDownload3Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink3TextBox.Text) && YoutubeDownload3Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly3CheckBox.IsChecked = false;
                 YoutubeDownload3Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload4Button.IsEnabled && YoutubeDownload4Button.Content.ToString() != "✔")
+            if (YoutubeDownload4Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink4TextBox.Text) && YoutubeDownload4Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly4CheckBox.IsChecked = false;
                 YoutubeDownload4Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            if (YoutubeDownload5Button.IsEnabled && YoutubeDownload5Button.Content.ToString() != "✔")
+            if (YoutubeDownload5Button.IsEnabled && !activeDownloadList.Contains(YoutubeLink5TextBox.Text) && YoutubeDownload5Button.Content.ToString() != DownloadFinishedIndicator)
             {
                 YoutubeDownloadAudioOnly5CheckBox.IsChecked = false;
                 YoutubeDownload5Button.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -305,8 +304,21 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
 
         private void YoutubeLinkTextBox_GotMouseCapture(object sender, MouseEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
-            textBox.SelectAll();
+            if (sender is TextBox textBox)
+            {
+                if (textBox.Text.Equals(String.Empty))
+                {
+                    string clipboardText = Clipboard.GetText();
+                    if (YoutubeClient.TryParseVideoId(clipboardText, out string videoID)) // Check if clipboard contains a valid youtube link.
+                    {
+                        textBox.Text = clipboardText;
+                    }
+                }
+                else
+                {
+                    textBox.SelectAll();
+                }
+            }
         }
     }
 }
