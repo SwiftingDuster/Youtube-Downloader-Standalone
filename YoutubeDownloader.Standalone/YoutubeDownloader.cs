@@ -84,7 +84,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
         internal static async void DownloadVideoAndAudioAsync(string youtubeURL, DownloadStart onDownloadStart, DownloadComplete onDownloadComplete, FFmpegProcessComplete onFFmpegProcessComplete, string outputDirectory, int maxVideoResolution = 1080)
         {
             Video video = await GetVideoInfoAsync(youtubeURL);
-            String videoTitle = video.Title.Trim();
+            string videoTitle = video.Title.Trim();
 
             char[] invalidChars = Path.GetInvalidFileNameChars();
             if (videoTitle.IndexOfAny(invalidChars) != -1)
@@ -98,12 +98,12 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             VideoStreamInfo videoStreamInfo = mediaStreamInfos.Item1;
             AudioStreamInfo audioStreamInfo = mediaStreamInfos.Item2;
 
-            String videoFileName = $"{videoTitle}.{videoStreamInfo.Container.GetFileExtension()}";
-            String audioFileName = $"{videoTitle}.{audioStreamInfo.Container.GetFileExtension()}";
-
-            String tempVideoFilePath = Path.Combine(outputDirectory, $"[Vid] {videoFileName}");
-            String tempAudioFilePath = Path.Combine(outputDirectory, $"[Aud] {audioFileName}");
-            String videoFilePath = Path.Combine(outputDirectory, Path.ChangeExtension(videoFileName, ".mp4"));
+            string videoFileName = $"{videoTitle}.{videoStreamInfo.Container.GetFileExtension()}";
+            string audioFileName = $"{videoTitle}.{audioStreamInfo.Container.GetFileExtension()}";
+            
+            string tempVideoFilePath = Path.Combine(outputDirectory, $"[Vid] {videoFileName}");
+            string tempAudioFilePath = Path.Combine(outputDirectory, $"[Aud] {audioFileName}");
+            string videoFilePath = Path.Combine(outputDirectory, Path.ChangeExtension(videoFileName, ".mp4"));
             await client.DownloadMediaStreamAsync(videoStreamInfo, tempVideoFilePath);
             await client.DownloadMediaStreamAsync(audioStreamInfo, tempAudioFilePath);
 
@@ -130,7 +130,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
         internal static async void DownloadAudioAsync(string youtubeURL, DownloadStart onDownloadStart, DownloadComplete onDownloadComplete, FFmpegProcessComplete onFFmpegProcessComplete, string outputDirectory, bool convertToMP3 = true)
         {
             Video video = await GetVideoInfoAsync(youtubeURL);
-            String videoTitle = video.Title.Trim();
+            string videoTitle = video.Title.Trim();
 
             char[] invalidChars = Path.GetInvalidFileNameChars();
             if (videoTitle.IndexOfAny(invalidChars) != -1)
@@ -142,8 +142,8 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
 
             AudioStreamInfo audioStreamInfo = await GetBestAudioStreamInfoAsync(youtubeURL);
 
-            String audioFileName = $"{videoTitle}.{audioStreamInfo.Container.GetFileExtension()}";
-            String audioFilePath = Path.Combine(outputDirectory, audioFileName);
+            string audioFileName = $"{videoTitle}.{audioStreamInfo.Container.GetFileExtension()}";
+            string audioFilePath = Path.Combine(outputDirectory, audioFileName);
             await client.DownloadMediaStreamAsync(audioStreamInfo, audioFilePath);
 
             onDownloadComplete?.Invoke(audioFileName);
