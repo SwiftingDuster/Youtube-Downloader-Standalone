@@ -16,10 +16,11 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
 
     internal static class YoutubeDownloader
     {
+        internal static string DownloadDirectory = Path.Combine(ApplicationPath, "Youtube Downloads");
+
         private static readonly string ApplicationPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        internal static readonly string DownloadDirectory = Path.Combine(ApplicationPath, "Youtube Downloads");
         private static readonly string FFmpegDirectory = Path.Combine(ApplicationPath, "Tools");
-        
+
         private static YoutubeClient client;
 
         static YoutubeDownloader()

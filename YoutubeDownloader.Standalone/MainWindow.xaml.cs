@@ -24,22 +24,19 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     public partial class MainWindow : Window
     {
         private const string DownloadFinishedIndicator = "✔";
-
-        private string downloadDirectory = YoutubeDownloader.DownloadDirectory;
-
+        
         private List<string> activeDownloadList = new List<string>();
-
-        private bool showDownloadConfirmation = true;
-
         private Dictionary<string, Video> urlToVideoInfoDictionary = new Dictionary<string, Video>();
         private Dictionary<string, BitmapImage> urlToVideoThumbnailDictionary = new Dictionary<string, BitmapImage>();
+        
+        private bool showDownloadConfirmation = true;
 
         public MainWindow()
         {
             InitializeComponent();
             
-            YoutubeDownloadDirectoryLabel.Content = $"Download to: {downloadDirectory}";
-            YoutubeDownloadDirectoryLabel.ToolTip = $"{downloadDirectory}";
+            YoutubeDownloadDirectoryLabel.Content = $"Download to: {YoutubeDownloader.DownloadDirectory}";
+            YoutubeDownloadDirectoryLabel.ToolTip = $"{YoutubeDownloader.DownloadDirectory}";
 
             VideoResolutionComboBox.SelectionChanged += VideoResolutionComboBox_SelectionChanged;
         }
@@ -155,11 +152,11 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             if (!audioOnly)
             {
                 int desiredResolution = int.Parse(((ComboBoxItem)VideoResolutionComboBox.SelectedItem).Content.ToString().Replace("p", ""));
-                YoutubeDownloader.DownloadVideoAndAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, downloadDirectory, desiredResolution);
+                YoutubeDownloader.DownloadVideoAndAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, YoutubeDownloader.DownloadDirectory, desiredResolution);
             }
             else
             {
-                YoutubeDownloader.DownloadAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, downloadDirectory, AudioConvertToMP3CheckBox.IsChecked.GetValueOrDefault(true));
+                YoutubeDownloader.DownloadAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, YoutubeDownloader.DownloadDirectory, AudioConvertToMP3CheckBox.IsChecked.GetValueOrDefault(true));
             }
 
             activeDownloadList.Add(url);
@@ -203,7 +200,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             {
                 Title = "Select a location to save your downloads",
                 IsFolderPicker = true,
-                InitialDirectory = downloadDirectory,
+                InitialDirectory = YoutubeDownloader.DownloadDirectory,
                 AddToMostRecentlyUsedList = false,
                 AllowNonFileSystemItems = false,
                 DefaultDirectory = YoutubeDownloader.DownloadDirectory,
@@ -217,15 +214,15 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
 
             if (fileDialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                downloadDirectory = fileDialog.FileName;
-                YoutubeDownloadDirectoryLabel.Content = $"Download to: {downloadDirectory}";
-                YoutubeDownloadDirectoryLabel.ToolTip = $"{downloadDirectory}";
+                YoutubeDownloader.DownloadDirectory = fileDialog.FileName;
+                YoutubeDownloadDirectoryLabel.Content = $"Download to: {YoutubeDownloader.DownloadDirectory}";
+                YoutubeDownloadDirectoryLabel.ToolTip = $"{YoutubeDownloader.DownloadDirectory}";
             }
         }
 
         private void YoutubeDownloadDirectoryGotoButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(downloadDirectory);
+            Process.Start(YoutubeDownloader.DownloadDirectory);
         }
 
         private void DownloadAllAudioButton_Click(object sender, RoutedEventArgs e)
