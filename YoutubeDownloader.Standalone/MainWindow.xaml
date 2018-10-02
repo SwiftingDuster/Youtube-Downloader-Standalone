@@ -1,6 +1,6 @@
 ﻿<Window x:Class="SwiftingDuster.YoutubeDownloader.Standalone.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="Youtube Downloader Standalone" Width="1280" Height="720 " FontFamily="Calibri" FontSize="16"
-        ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" mc:Ignorable="d">
+        Title="Youtube Downloader Standalone" Width="1072" Height="529" MinWidth="1280" MinHeight="720"
+        FontFamily="Calibri" FontSize="16" WindowStartupLocation="CenterScreen" mc:Ignorable="d">
 
     <Grid>
         <TabControl Margin="10">
