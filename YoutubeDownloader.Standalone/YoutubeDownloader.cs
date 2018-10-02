@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 using YoutubeExplode;
@@ -13,25 +14,21 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     internal delegate void DownloadComplete(string fileNameWithExtension);
     internal delegate void FFmpegProcessComplete(string fileNameWithExtension);
 
-    internal class YoutubeDownloader
+    internal static class YoutubeDownloader
     {
-        internal static readonly string YoutubeDownloadsDirectory = Path.Combine(Environment.CurrentDirectory, "Youtube Downloads");
-        private static readonly string FFmpegDirectory = Path.Combine(Environment.CurrentDirectory, "Tools");
-        private const string FFmpegExeName = "ffmpeg.exe";
-        private const string FFprobeExeName = "ffprobe.exe";
+        private static readonly string ApplicationPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        internal static readonly string DownloadDirectory = Path.Combine(ApplicationPath, "Youtube Downloads");
+        private static readonly string FFmpegDirectory = Path.Combine(ApplicationPath, "Tools");
+        
+        private static YoutubeClient client;
 
-        private static YoutubeClient client = new YoutubeClient();
-
-        internal static void Initialize()
+        static YoutubeDownloader()
         {
-            if (!Directory.Exists(YoutubeDownloadsDirectory))
-            {
-                Directory.CreateDirectory(YoutubeDownloadsDirectory);
-            }
+            if (!Directory.Exists(DownloadDirectory)) Directory.CreateDirectory(DownloadDirectory);
 
             FFbase.FFmpegDir = FFmpegDirectory;
-            FFbase.FFmpegExecutableName = FFmpegExeName;
-            FFbase.FFprobeExecutableName = FFprobeExeName;
+
+            client = new YoutubeClient();
         }
 
         /// <summary>

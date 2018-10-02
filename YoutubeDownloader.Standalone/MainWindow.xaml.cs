@@ -25,7 +25,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     {
         private const string DownloadFinishedIndicator = "✔";
 
-        private string downloadDirectory = YoutubeDownloader.YoutubeDownloadsDirectory;
+        private string downloadDirectory = YoutubeDownloader.DownloadDirectory;
 
         private List<string> activeDownloadList = new List<string>();
 
@@ -37,8 +37,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
         public MainWindow()
         {
             InitializeComponent();
-
-            YoutubeDownloader.Initialize();
+            
             YoutubeDownloadDirectoryLabel.Content = $"Download to: {downloadDirectory}";
             YoutubeDownloadDirectoryLabel.ToolTip = $"{downloadDirectory}";
 
@@ -207,7 +206,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                 InitialDirectory = downloadDirectory,
                 AddToMostRecentlyUsedList = false,
                 AllowNonFileSystemItems = false,
-                DefaultDirectory = YoutubeDownloader.YoutubeDownloadsDirectory,
+                DefaultDirectory = YoutubeDownloader.DownloadDirectory,
                 EnsureFileExists = true,
                 EnsurePathExists = true,
                 EnsureReadOnly = false,
