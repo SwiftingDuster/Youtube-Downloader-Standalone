@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Zenn.YoutubeDownloader.Standalone.Properties {
+namespace SwiftingDuster.YoutubeDownloader.Standalone.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Zenn.YoutubeDownloader.Standalone.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Zenn.YoutubeDownloader.Standalone.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SwiftingDuster.YoutubeDownloader.Standalone.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
