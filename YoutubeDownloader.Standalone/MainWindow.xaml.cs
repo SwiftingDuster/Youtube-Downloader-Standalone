@@ -115,13 +115,18 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
         {
             Button button = sender as Button;
 
-            if (button.Content.ToString() == DownloadFinishedIndicator) return;
+            if (button.Content.ToString() == DownloadFinishedIndicator) return; // Already completed download.
 
             string urlTextBoxNumber = new String(button.Name.SkipWhile(c => !Char.IsDigit(c)).Take(1).ToArray());
             string url = (FindName($"YoutubeLink{urlTextBoxNumber}TextBox") as TextBox).Text;
             bool audioOnly = (FindName($"YoutubeDownloadAudioOnly{urlTextBoxNumber}CheckBox") as CheckBox).IsChecked.GetValueOrDefault();
 
-            if (!urlToVideoInfoDictionary.TryGetValue(url, out Video video)) return;
+            if (!urlToVideoInfoDictionary.TryGetValue(url, out Video video)) return; // Video data is not retrieved (and cached) in the dictionary yet.
+            if (activeDownloadList.Contains(url)) // The video its trying to download is already downloading/processing.
+            {
+                MessageBox.Show($"Download aborted: Already downloading video: {video.Title.Trim()}.", "Download Conflict", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             if (showDownloadConfirmation)
             {
