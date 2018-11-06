@@ -62,17 +62,32 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                 {
                     video = await YoutubeDownloader.GetVideoInfoAsync(url);
                 }
-                catch (VideoUnavailableException ex)
+                catch (VideoUnavailableException vuex)
                 {
                     downloadButton.Content = "Download";
                     thumbnailImage.Source = null;
-                    titleTextBlock.Text = ex.Message;
+                    titleTextBlock.Text = vuex.Message;
                     infoLabel.Content = String.Empty;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 urlToVideoInfoDictionary[url] = video;
             }
-            Tuple<VideoStreamInfo, AudioStreamInfo> mediaStreamInfos = await YoutubeDownloader.GetBestVideoAndAudioStreamInfoAsync(url);
+
+            Tuple<VideoStreamInfo, AudioStreamInfo> mediaStreamInfos = null;
+            try
+            {
+                mediaStreamInfos = await YoutubeDownloader.GetBestVideoAndAudioStreamInfoAsync(url);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             string videoSize = Math.Round(ByteSize.FromBytes(mediaStreamInfos.Item1.Size + mediaStreamInfos.Item2.Size).MegaBytes, 2).ToString() + " MB";
             string audioSize = Math.Round(ByteSize.FromBytes(mediaStreamInfos.Item2.Size).MegaBytes, 2).ToString() + " MB";
@@ -154,14 +169,23 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                 activeDownloadList.Remove(url);
             }
 
-            if (!audioOnly)
+            try
             {
-                int desiredResolution = int.Parse(((ComboBoxItem)VideoResolutionComboBox.SelectedItem).Content.ToString().Replace("p", ""));
-                YoutubeDownloader.DownloadVideoAndAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, YoutubeDownloader.DownloadDirectory, desiredResolution);
+
+                if (!audioOnly)
+                {
+                    int desiredResolution = int.Parse(((ComboBoxItem)VideoResolutionComboBox.SelectedItem).Content.ToString().Replace("p", ""));
+                    YoutubeDownloader.DownloadVideoAndAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, YoutubeDownloader.DownloadDirectory, desiredResolution);
+                }
+                else
+                {
+                    YoutubeDownloader.DownloadAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, YoutubeDownloader.DownloadDirectory, AudioConvertToMP3CheckBox.IsChecked.GetValueOrDefault(true));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                YoutubeDownloader.DownloadAudioAsync(url, DownloadStart, DownloadComplete, FFmpegProcessComplete, YoutubeDownloader.DownloadDirectory, AudioConvertToMP3CheckBox.IsChecked.GetValueOrDefault(true));
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             activeDownloadList.Add(url);
@@ -180,7 +204,17 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                 if (downloadButton.IsEnabled && YoutubeClient.TryParseVideoId(links[i], out string videoID))
                 {
                     downloadButton.IsEnabled = false;
-                    Tuple<VideoStreamInfo, AudioStreamInfo> mediaStreamInfos = await YoutubeDownloader.GetBestVideoAndAudioStreamInfoAsync(YoutubeLink1TextBox.Text, desiredResolution);
+                    Tuple<VideoStreamInfo, AudioStreamInfo> mediaStreamInfos = null;
+
+                    try
+                    {
+                        mediaStreamInfos = await YoutubeDownloader.GetBestVideoAndAudioStreamInfoAsync(YoutubeLink1TextBox.Text, desiredResolution);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
 
                     string videoSize = Math.Round(ByteSize.FromBytes(mediaStreamInfos.Item1.Size + mediaStreamInfos.Item2.Size).MegaBytes, 2).ToString() + " MB";
                     string audioSize = Math.Round(ByteSize.FromBytes(mediaStreamInfos.Item2.Size).MegaBytes, 2).ToString() + " MB";
