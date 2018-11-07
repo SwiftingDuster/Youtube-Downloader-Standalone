@@ -18,23 +18,23 @@ using YoutubeExplode.Models.MediaStreams;
 
 namespace SwiftingDuster.YoutubeDownloader.Standalone
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private const string DownloadFinishedIndicator = "✔";
-        
+        private const string CompileDate = "07-Nov-2018";
+
         private List<string> activeDownloadList = new List<string>();
         private Dictionary<string, Video> urlToVideoInfoDictionary = new Dictionary<string, Video>();
         private Dictionary<string, BitmapImage> urlToVideoThumbnailDictionary = new Dictionary<string, BitmapImage>();
-        
+
         private bool showDownloadConfirmation = true;
 
         public MainWindow()
         {
             InitializeComponent();
-            
+
+            Title = $"Youtube Downloader Standalone ({CompileDate})";
+
             YoutubeDownloadDirectoryLabel.Content = $"Download to: {YoutubeDownloader.DownloadDirectory}";
             YoutubeDownloadDirectoryLabel.ToolTip = $"{YoutubeDownloader.DownloadDirectory}";
 
@@ -72,7 +72,14 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    
+                    if (MessageBox.Show($"Error: {ex.Message}" +
+                        $"{Environment.NewLine}{Environment.NewLine}" +
+                        $"This might be because Youtube changed something on their side." +
+                        $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                    {
+                        Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
+                    }
                     return;
                 }
                 urlToVideoInfoDictionary[url] = video;
@@ -85,7 +92,13 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (MessageBox.Show($"Error: {ex.Message}" +
+                        $"{Environment.NewLine}{Environment.NewLine}" +
+                        $"This might be because Youtube changed something on their side." +
+                        $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                {
+                    Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
+                }
                 return;
             }
 
@@ -107,7 +120,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                             thumbnailImage.Source = image = imageBytes.GetImageFromBytes();
                             downloadButton.Content = "Download";
                             downloadButton.IsEnabled = true;
-                            
+
                             if (!urlToVideoThumbnailDictionary.ContainsKey(url)) urlToVideoThumbnailDictionary.Add(url, image);
                         }
                         catch (TargetInvocationException) // Max resolution thumbnail was not found.
@@ -184,7 +197,13 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (MessageBox.Show($"Error: {ex.Message}" +
+                        $"{Environment.NewLine}{Environment.NewLine}" +
+                        $"This might be because Youtube changed something on their side." +
+                        $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                {
+                    Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
+                }
                 return;
             }
 
@@ -212,7 +231,13 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        if (MessageBox.Show($"Error: {ex.Message}" +
+                        $"{Environment.NewLine}{Environment.NewLine}" +
+                        $"This might be because Youtube changed something on their side." +
+                        $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                        {
+                            Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
+                        }
                         return;
                     }
 
