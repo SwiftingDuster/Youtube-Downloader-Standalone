@@ -75,7 +75,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                     
                     if (MessageBox.Show($"Error: {ex.Message}" +
                         $"{Environment.NewLine}{Environment.NewLine}" +
-                        $"This might be because Youtube changed something on their side." +
+                        $"This might be because Youtube changed something on their side. " +
                         $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                     {
                         Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
@@ -94,7 +94,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             {
                 if (MessageBox.Show($"Error: {ex.Message}" +
                         $"{Environment.NewLine}{Environment.NewLine}" +
-                        $"This might be because Youtube changed something on their side." +
+                        $"This might be because Youtube changed something on their side. " +
                         $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                 {
                     Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
@@ -199,7 +199,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
             {
                 if (MessageBox.Show($"Error: {ex.Message}" +
                         $"{Environment.NewLine}{Environment.NewLine}" +
-                        $"This might be because Youtube changed something on their side." +
+                        $"This might be because Youtube changed something on their side. " +
                         $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                 {
                     Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
@@ -233,7 +233,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                     {
                         if (MessageBox.Show($"Error: {ex.Message}" +
                         $"{Environment.NewLine}{Environment.NewLine}" +
-                        $"This might be because Youtube changed something on their side." +
+                        $"This might be because Youtube changed something on their side. " +
                         $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                         {
                             Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
