@@ -21,7 +21,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     public partial class MainWindow : Window
     {
         private const string DownloadFinishedIndicator = "✔";
-        private const string CompileDate = "07-Nov-2018";
+        private const string CompileDate = "08-Nov-2018";
 
         private List<string> activeDownloadList = new List<string>();
         private Dictionary<string, Video> urlToVideoInfoDictionary = new Dictionary<string, Video>();
