@@ -21,7 +21,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
     public partial class MainWindow : Window
     {
         private const string DownloadFinishedIndicator = "✔";
-        private const string CompileDate = "08-Nov-2018";
+        private const string CompileDate = "10-Feb-2019";
 
         private List<string> activeDownloadList = new List<string>();
         private Dictionary<string, Video> urlToVideoInfoDictionary = new Dictionary<string, Video>();
@@ -234,7 +234,7 @@ namespace SwiftingDuster.YoutubeDownloader.Standalone
                         if (MessageBox.Show($"Error: {ex.Message}" +
                         $"{Environment.NewLine}{Environment.NewLine}" +
                         $"This might be because Youtube changed something on their side. " +
-                        $"Do you want to launch the download link for a possible new version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                        $"Do you want to launch the download link for a possible newer version of this downloader?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                         {
                             Process.Start("https://drive.google.com/drive/folders/1dPwBc9CZkm6KPnbSpYBXvjo9INYmL-PU?usp=sharing");
                         }
